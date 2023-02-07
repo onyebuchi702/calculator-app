@@ -2,11 +2,22 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { calculateExpression } from "../helper";
 import Calculator from "./Calculator";
 
+const mockHandleMemoryStoreFn = jest.fn();
+const mockHandleMemoryRecallFn = jest.fn();
+const mockSetValFn = jest.fn();
+
+const defaultProps = {
+  handleMemoryStore: mockHandleMemoryStoreFn,
+  handleMemoryRecall: mockHandleMemoryRecallFn,
+  setValue: mockSetValFn,
+  value: "",
+};
+
 describe("<Calculator />", () => {
   const placeholderText = "type in your values";
 
   it("shows available numbers", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     numbers.forEach((n) => {
@@ -15,14 +26,13 @@ describe("<Calculator />", () => {
   });
 
   it("shows 4 rows", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const rows = screen.getAllByRole("row");
 
     expect(rows).toHaveLength(4);
   });
 
   it("shows calculation operators", () => {
-    render(<Calculator />);
     const calcOperators = ["+", "-", "×", "÷"];
 
     calcOperators.forEach((operator) => {
@@ -31,29 +41,29 @@ describe("<Calculator />", () => {
   });
 
   it("renders equal", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const equalSign = "=";
     expect(screen.getByText(equalSign)).toBeInTheDocument();
   });
 
   it("renders clear sign", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const clear = "C";
     expect(screen.getByText(clear)).toBeInTheDocument();
   });
 
   it("renders an input", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     expect(screen.getByPlaceholderText(placeholderText)).toBeInTheDocument();
   });
 
   it("calculator input is disabled", () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     expect(screen.getByPlaceholderText(placeholderText)).toBeDisabled();
   });
 
   it("displays users inputs", async () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const one = screen.getByText("1");
     const two = screen.getByText("2");
     const plus = screen.getByText("+");
@@ -67,7 +77,7 @@ describe("<Calculator />", () => {
   });
 
   it("displays multiple users inputs", async () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const one = screen.getByText("1");
     const two = screen.getByText("2");
     const three = screen.getByText("3");
@@ -89,7 +99,7 @@ describe("<Calculator />", () => {
   });
 
   it("calculate based on users inputs", async () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const one = screen.getByText("1");
     const two = screen.getByText("2");
     const plus = screen.getByText("+");
@@ -111,7 +121,7 @@ describe("<Calculator />", () => {
   });
 
   it("calculate based on multiple users inputs", async () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const one = screen.getByText("1");
     const two = screen.getByText("2");
     const three = screen.getByText("3");
@@ -141,7 +151,7 @@ describe("<Calculator />", () => {
   });
 
   it("can clear results", async () => {
-    render(<Calculator />);
+    render(<Calculator {...defaultProps} />);
     const one = screen.getByText("1");
     const two = screen.getByText("2");
     const plus = screen.getByText("+");
@@ -162,6 +172,30 @@ describe("<Calculator />", () => {
     ).toBe("");
   });
 });
+
+// it("calls the memory store function", async () => {
+//   render(<Calculator {...defaultProps} value="20" setValue={mockSetValFn} />);
+//   const ms = screen.getByText("MS");
+//   fireEvent.click(ms);
+
+//   expect(mockHandleMemoryStoreFn).toHaveBeenCalledTimes(1);
+// });
+
+// it("calls the memory recall function", async () => {
+//   const value = "20";
+//   render(
+//     <Calculator {...defaultProps} value={value} setValue={mockSetValFn} />
+//   );
+//   const mr = screen.getByText("MR");
+//   const ms = screen.getByText("MS");
+//   fireEvent.click(ms);
+//   fireEvent.click(mr);
+
+//   expect(mockHandleMemoryStoreFn).toHaveBeenCalled();
+//   expect(mockHandleMemoryRecallFn).toHaveBeenCalledTimes(1);
+
+//   expect(value).toBe("20");
+// });
 
 describe("calculateExpression", () => {
   it("correctly computes for 2 numbers with +", () => {

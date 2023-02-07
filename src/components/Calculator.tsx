@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, SetStateAction, useState } from "react";
 import { calculateExpression } from "../helper";
 
 const rows = [[7, 8, 9], [4, 5, 6], [1, 2, 3], [0]];
@@ -6,8 +6,19 @@ const calcOperators = ["+", "-", "×", "÷"];
 const equalSign = "=";
 const clear = "C";
 
-const Calculator = () => {
-  const [value, setValue] = useState<string>("");
+interface ICalculator {
+  handleMemoryStore: () => void;
+  handleMemoryRecall: () => void;
+  value: string;
+  setValue: React.Dispatch<SetStateAction<string>>;
+}
+
+const Calculator = ({
+  handleMemoryStore,
+  handleMemoryRecall,
+  value,
+  setValue,
+}: ICalculator) => {
   const [error, setError] = useState<string>("");
 
   const calculate = () => {
@@ -48,7 +59,13 @@ const Calculator = () => {
                     </button>
                   );
                 })}
-                {i === 3 && <button onClick={calculate}>{equalSign}</button>}
+                {i === 3 && (
+                  <>
+                    <button onClick={calculate}>{equalSign}</button>
+                    <button onClick={handleMemoryRecall}>MR</button>
+                    <button onClick={handleMemoryStore}>MS</button>
+                  </>
+                )}
               </div>
             </Fragment>
           );
